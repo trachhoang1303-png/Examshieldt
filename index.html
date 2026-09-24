@@ -5,122 +5,135 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ExamShield Web Mocktest</title>
 <style>
-* { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
-body { background-color: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
+/* CSS GIAO DIỆN CHUẨN TỰ ĐỘNG PHÓNG TO TRÀN VIỀN MÀN HÌNH */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { width: 100vw; height: 100vh; overflow: hidden; background: #f0f2f5; font-family: Arial, sans-serif; }
 
-/* ==================== MÀN HÌNH KIỂM TRA HỆ THỐNG ==================== */
-.check-wrapper { background: white; width: 850px; height: 550px; border-radius: 4px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); display: flex; position: relative; border: 1px solid #cbd5e1; }
-.close-btn { position: absolute; top: 15px; right: 20px; font-size: 20px; color: #64748b; cursor: pointer; }
-.check-sidebar { width: 320px; border-right: 1px solid #e2e8f0; padding: 40px 30px; display: flex; flex-direction: column; gap: 30px; }
-.brand-title { font-size: 24px; font-weight: bold; color: #1e293b; margin-bottom: 10px; }
-.brand-sub { font-size: 13px; color: #c31e1e; font-weight: bold; margin-top: -10px; margin-bottom: 15px; }
-.check-item { display: flex; align-items: center; gap: 15px; }
-.check-icon { font-size: 20px; color: #64748b; width: 25px; text-align: center; }
-.check-info { display: flex; flex-direction: column; }
-.check-name { font-size: 15px; font-weight: bold; color: #334155; }
-.check-status { font-size: 13px; font-weight: bold; color: #64748b; margin-top: 2px; }
-.status-passed { color: #16a34a; }
-.status-warning { color: #ea580c; }
-.check-content { flex: 1; padding: 50px; display: flex; flex-direction: column; justify-content: center; }
-.help-box { position: absolute; top: 20px; right: 60px; display: flex; gap: 20px; font-size: 12px; color: #64748b; text-align: center; }
-.warn-title { color: #ea580c; font-weight: bold; font-size: 15px; margin-bottom: 25px; display: flex; align-items: center; gap: 8px; }
-.ready-title { font-size: 24px; font-weight: bold; color: #16a34a; margin-bottom: 15px; }
-.ready-desc { font-size: 14px; color: #475569; line-height: 1.6; margin-bottom: 40px; }
-.start-btn { background: white; border: 1px solid #c31e1e; color: #c31e1e; padding: 12px 30px; font-weight: bold; font-size: 14px; border-radius: 4px; cursor: pointer; align-self: flex-end; text-transform: uppercase; }
+/* 1. MÀN HÌNH KIỂM TRA HỆ THỐNG (SYSTEM CHECK) */
+#screen-check { width: 100%; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #fff; padding: 20px; }
+.check-box { width: 500px; padding: 30px; border: 1px solid #ddd; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; }
+.brand-title { font-size: 24px; font-weight: bold; color: #c31e1e; margin-bottom: 5px; }
+.brand-sub { font-size: 14px; color: #666; margin-bottom: 25px; }
+.ready-title { font-size: 20px; font-weight: bold; color: #2e7d32; margin-top: 15px; }
+.ready-desc { font-size: 14px; color: #555; margin: 10px 0 20px 0; }
+.start-btn { background: #c31e1e; color: #fff; border: none; padding: 12px 35px; font-size: 16px; font-weight: bold; border-radius: 4px; cursor: pointer; transition: 0.2s; }
+.start-btn:hover { background: #a51818; }
 
-/* ==================== MÀN HÌNH PHÒNG THI CHÍNH ==================== */
-.exam-layout { width: 100vw; height: 100vh; display: none; flex-direction: column; background-color: #f0f2f5; }
-header { height: 70px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 3px solid #c31e1e; }
+/* 2. GIAO DIỆN PHÒNG THI CHÍNH THỨC */
+#screen-exam { width: 100%; height: 100vh; display: none; flex-direction: column; }
+header { background: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; border-bottom: 3px solid #c31e1e; height: 70px; }
 .logo { font-size: 22px; font-weight: bold; color: #c31e1e; }
-.exam-title { font-size: 15px; color: #3c3c3c; margin-left: 20px; flex-grow: 1; }
-.timer-box { background: #c31e1e; color: white; padding: 8px 15px; font-weight: bold; font-size: 18px; border-radius: 4px; margin-right: 20px; }
-.nav-btn { padding: 8px 16px; border: none; font-weight: bold; cursor: pointer; margin-left: 10px; border-radius: 4px; }
-.btn-prev { background: #d2d7dc; color: #333; }
-.btn-next { background: #c31e1e; color: white; }
+.exam-title { font-size: 14px; color: #444; }
+.timer-box { background: #c31e1e; color: #fff; padding: 8px 18px; font-weight: bold; font-size: 16px; border-radius: 4px; }
+.nav-btn { background: #c31e1e; color: #fff; border: none; padding: 8px 18px; font-weight: bold; cursor: pointer; border-radius: 4px; margin-left: 10px; }
+.nav-btn:disabled { background: #ccc; cursor: not-allowed; }
 
-.main-container { display: flex; flex: 1; height: calc(100vh - 70px); }
-sidebar { width: 220px; background: #f8f9fa; border-right: 1px solid #e2e8f0; padding: 20px 0; overflow-y: auto; }
-.menu-item { padding: 12px 20px; font-size: 13px; color: #4a5568; cursor: pointer; border-left: 4px solid transparent; }
-.menu-item.active { color: #c31e1e; font-weight: bold; background: #fee2e2; border-left-color: #c31e1e; }
+.main-container { display: flex; flex: 1; height: calc(100vh - 70px); overflow: hidden; width: 100%; }
+sidebar { width: 220px; background: #f8f9fa; border-right: 1px solid #ddd; padding: 20px 10px; height: 100%; }
+.sidebar-item { padding: 12px 15px; margin-bottom: 5px; font-size: 14px; border-radius: 4px; color: #555; font-weight: bold; }
+.sidebar-item.active { background: #ffebeb; color: #c31e1e; border-left: 4px solid #c31e1e; }
 
-main { flex: 1; padding: 30px; overflow: hidden; }
-.question-card { background: white; border: 1px solid #cbd5e1; width: 100%; padding: 20px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 15px; }
-.q-text { font-size: 15px; font-weight: bold; color: #1e293b; margin-bottom: 15px; }
-
-.option-container { display: flex; flex-direction: column; gap: 10px; }
-.option-item { display: flex; align-items: center; border: 1px solid #cbd5e1; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
-.option-item.selected { border: 2px solid #c31e1e; background: #fff5f5; }
-.opt-letter { font-weight: bold; background: #e2e8f0; color: #334155; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-right: 15px; }
-.option-item.selected .opt-letter { background: #c31e1e; color: white; }
-
-.short-input { width: 100%; max-width: 400px; padding: 10px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 4px; margin-top: 5px; }
-.short-input:focus { border-color: #c31e1e; outline: none; background: #fff5f5; }
-.btn-exit { background: #c31e1e; color: white; border: none; padding: 10px 24px; font-weight: bold; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+#main-exam-content { flex: 1; padding: 25px; overflow-y: auto; display: flex; gap: 25px; height: 100%; background: #f0f2f5; }
+.reading-text-pane { flex: 1; background: #fff; padding: 25px; border: 1px solid #ddd; border-radius: 6px; overflow-y: auto; height: calc(100vh - 120px); line-height: 1.7; text-align: left; }
+.question-pane { flex: 1; background: #fff; padding: 25px; border: 1px solid #ddd; border-radius: 6px; overflow-y: auto; height: calc(100vh - 120px); text-align: left; }
+.option-label { display: block; padding: 12px; margin: 12px 0; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; transition: 0.2s; font-size: 14px; }
+.option-label:hover { background: #f9f9f9; }
+.option-label.selected { border: 2px solid #c31e1e; background: #fff5f5; font-weight: bold; }
 </style>
 </head>
 <body>
 
 <!-- 1. GIAO DIỆN KIỂM TRA HỆ THỐNG -->
-<div class="check-wrapper" id="screen-check">
-<div class="close-btn">✕</div>
-<div class="help-box"><div>📞<br>Call</div><div>💬<br>Chat</div></div>
-<div class="check-sidebar">
-<div><div class="brand-title">ExamShield</div><div class="brand-sub">by PeopleCert</div></div>
-<div class="check-item"><div class="check-icon">🛡️</div><div class="check-info"><div class="check-name">System Integrity</div><div class="check-status status-passed">✓ Passed</div></div></div>
-<div class="check-item"><div class="check-icon">🔊</div><div class="check-info"><div class="check-name">Audio</div><div class="check-status status-passed">✓ Passed</div></div></div>
-<div class="check-item"><div class="check-icon">📷</div><div class="check-info"><div class="check-name">Camera</div><div class="check-status status-warning">⚠ Warning</div></div></div>
-<div class="check-item"><div class="check-icon">📶</div><div class="check-info"><div class="check-name">Internet Connection</div><div class="check-status status-passed">✓ Passed</div></div></div>
-</div>
-<div class="check-content">
-<div class="warn-title">⚠ 1 Warning(s) Found</div>
-<div class="ready-title">Ready for the Exam</div>
-<div class="ready-desc">Your computer has successfully passed the compatibility check.<br><br>Click the button below to start your mock exam.</div>
+<div id="screen-check">
+<div class="check-box">
+<div class="brand-title">ExamShield</div>
+<div class="brand-sub">by PeopleCert</div>
+<hr style="border:0; border-top:1px solid #eee; margin:15px 0;">
+<div class="ready-title">✓ Ready for the Exam</div>
+<div class="ready-desc">Your computer has successfully passed the compatibility check.<br>Click the button below to start your mock exam.</div>
 <button class="start-btn" onclick="vaoLamBai()">Enter Exam</button>
 </div>
 </div>
 
-<!-- 2. GIAO DIỆN PHÒNG THI CHÍNH -->
-<div class="exam-layout" id="screen-exam">
+<!-- 2. GIAO DIỆN PHÒNG THI CHÍNH THỨC -->
+<div id="screen-exam">
 <header>
 <div class="logo">PeopleCert</div>
 <div class="exam-title">LanguageCert International ESOL B2 - Full Mocktest</div>
+<div style="display: flex; align-items: center;">
 <div class="timer-box" id="timer">01:00:00</div>
 <button class="nav-btn btn-prev" onclick="chuyenCauHoi(-1)">Previous</button>
 <button class="nav-btn btn-next" onclick="chuyenCauHoi(1)">Next</button>
+</div>
 </header>
+
 <div class="main-container">
-<sidebar></sidebar>
+<sidebar>
+<div class="sidebar-item active">▪ Reading Part 1</div>
+<div class="sidebar-item">▪ Reading Part 2</div>
+<div class="sidebar-item">▪ Reading Part 3</div>
+<div class="sidebar-item">▪ Writing Part 1</div>
+</sidebar>
 <main id="main-exam-content"></main>
 </div>
 </div>
 
 <script>
-// ==================== CƠ SỞ DỮ LIỆU ĐỀ THI ĐẦY ĐỦ 4 PARTS READING + WRITING ====================
+// CƠ SỞ DỮ LIỆU ĐỀ THI TRẮC NGHIỆM ĐỘNG
 const danhSachReading = [
-// --- PART 1: Monster-hunting ---
 {
-id: "r1", part: "Reading Part 1", type: "multiple-choice", title: "Monster-hunting",
-<script>
-// HÀM TỰ ĐỘNG KHỞI CHẠY KHI ẤN NÚT ENTER EXAM Ở DÒNG 78
+id: "r1",
+part: "Reading Part 1",
+title: "Monster-hunting and Cryptids",
+passage: "<h3>Reading Text: Monster-hunting</h3><p style='margin-top:12px;'>Cryptids are creatures that people believe exist, but there is no official scientific proof yet. The most famous example is the Loch Ness Monster in Scotland. For decades, sonar operators and tourists have claimed to see a large shape swimming in the deep lake...</p><p style='margin-top:10px;'>Another famous cryptid is Bigfoot, a large ape-like creature said to roam the forests of North America. Many scientists argue that these stories are myths or misidentifications of real animals like bears.</p>",
+options: [
+"A. An animal officially proven by modern science.",
+"B. A creature rumored to exist but lacks scientific proof.",
+"C. An extinct species that was discovered recently."
+],
+correct: "B"
+},
+{
+id: "r2",
+part: "Reading Part 1",
+title: "The Success of the Sports Team",
+passage: "<h3>Reading Text: Team Achievement</h3><p style='margin-top:12px;'>The local women's football team has achieved incredible success this season, winning ten matches in a row. The club manager attributes this success to excellent teamwork, high discipline, and intensive tactical training sessions over the summer.</p>",
+options: [
+"A. some particularly talented new players joined.",
+"B. the coach changed the training schedule and tactics.",
+"C. team members spent more time together off the pitch."
+],
+correct: "B"
+}
+];
+
+let viTriHienTai = 0;
+let cauTraLoiThiSinh = {}; // Lưu đáp án học viên chọn
+
+// HÀM KÍCH HOẠT KHI NHẤN NÚT ENTER EXAM
 function vaoLamBai() {
-// 1. ÉP TRÌNH DUYỆT TỰ ĐỘNG PHÓNG TO FULL MÀN HÌNH TỰ ĐỘNG (Bỏ hẳn thanh công cụ Chrome)
+// Ép kích hoạt Fullscreen toàn màn hình trình duyệt
 const de = document.documentElement;
 if (de.requestFullscreen) de.requestFullscreen();
 else if (de.webkitRequestFullscreen) de.webkitRequestFullscreen();
 else if (de.msRequestFullscreen) de.msRequestFullscreen();
 
-// 2. ẨN MÀN HÌNH KIỂM TRA, HIỆN MÀN HÌNH THI CHÍNH
+// Chuyển đổi màn hình giao diện
 document.getElementById('screen-check').style.display = 'none';
-document.getElementById('screen-exam').style.display = 'block';
+document.getElementById('screen-exam').style.display = 'flex';
 
-// 3. TỰ ĐỘNG VẼ CÂU HỎI ĐẦU TIÊN VÀO VÙNG TRỐNG DÒNG 93
+// Vẽ câu hỏi đầu tiên
 hienThiCauHoi(0);
 
-// 4. KÍCH HOẠT ĐỒNG HỒ ĐẾM NGƯỢC CHẠY GIÂY
+// Chạy đồng hồ đếm ngược (60 phút)
 let thoiGian = 3600;
 const oDongHo = document.getElementById('timer');
 const boDemGio = setInterval(function() {
-if(thoiGian <= 0) { clearInterval(boDemGio); alert("Time is up!"); return; }
+if(thoiGian <= 0) {
+clearInterval(boDemGio);
+alert("Time is up! Your exam has ended.");
+return;
+}
 thoiGian--;
 let h = Math.floor(thoiGian / 3600);
 let m = Math.floor((thoiGian % 3600) / 60);
@@ -129,42 +142,28 @@ if(oDongHo) oDongHo.innerText = (h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+
 }, 1000);
 }
 
-// HÀM ĐỌC DỮ LIỆU ĐỀ THI ĐỂ HIỂN THỊ LÊN MÀN HÌNH
-let viTriHienTai = 0;
+// HÀM HIỂN THỊ CÂU HỎI VÀ BÀI ĐỌC CHIA ĐÔI MÀN HÌNH
 function hienThiCauHoi(index) {
 if (!danhSachReading || danhSachReading.length === 0) return;
 viTriHienTai = index;
 const item = danhSachReading[index];
 
-// Đẩy văn bản và câu hỏi trắc nghiệm vào vùng <main id="main-exam-content"> trống
+// Ẩn/hiện nút điều hướng hợp lý
+document.querySelector('.btn-prev').disabled = (index === 0);
+document.querySelector('.btn-next').disabled = (index === danhSachReading.length - 1);
+
+// Cập nhật trạng thái thanh Sidebar bên trái
+const sidebarItems = document.querySelectorAll('.sidebar-item');
+sidebarItems.forEach((sb, i) => {
+if (i === 0) sb.classList.add('active'); // Giữ hoạt động phần Reading
+});
+
+// Vẽ nội dung vào ô Main
 const mainContent = document.getElementById('main-exam-content');
 if (mainContent) {
 mainContent.innerHTML = `
-<div style="display: flex; gap: 20px; padding: 20px; width: 100%;">
-<div style="flex: 1; background: #fff; padding: 20px; border: 1px solid #ddd; max-height: 75vh; overflow-y: auto;">
-<h3>Reading Text: Monster-hunting</h3>
-<p style="margin-top: 10px; line-height: 1.6;">Cryptids are creatures that people believe exist, but there is no official scientific proof yet. The most famous example is the Loch Ness Monster in Scotland. For decades, tourists have claimed to see a large shape swimming in the deep lake...</p>
+<div class="reading-text-pane">
+${item.passage}
 </div>
-<div style="flex: 1; background: #fff; padding: 20px; border: 1px solid #ddd;">
-<h4 style="color: #c31e1e;">Question ${index + 1}:</h4>
-<p style="font-weight: bold; margin: 15px 0;">${item.title || "Choose the correct answer based on the text:"}</p>
-<label style="display: block; margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
-<input type="radio" name="ans"> A. some particularly talented new players joined.
-</label>
-<label style="display: block; margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
-<input type="radio" name="ans"> B. the coach changed the training schedule.
-</label>
-</div>
-</div>
-`;
-}
-}
-
-// KẾT NỐI HÀM CHUYỂN CÂU VỚI HAI NÚT PREVIOUS / NEXT Ở DÒNG 88 VÀ 89 CỦA BẠN
-function chuyenCauHoi(huong) {
-let viTriMoi = viTriHienTai + huong;
-if (viTriMoi >= 0 && viTriMoi < danhSachReading.length) {
-hienThiCauHoi(viTriMoi);
-}
-}
-</script>
+<div class="question-pane">
+<h4 style="color: #c31e1e; margin-bottom: 10px;">Question ${index + 1}:</h4>
