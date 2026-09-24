@@ -75,7 +75,7 @@ main { flex: 1; padding: 30px; overflow: hidden; }
 <div class="warn-title">⚠ 1 Warning(s) Found</div>
 <div class="ready-title">Ready for the Exam</div>
 <div class="ready-desc">Your computer has successfully passed the compatibility check.<br><br>Click the button below to start your mock exam.</div>
-<button class="start-btn" onclick="document.getElementById('screen-check').style.display='none'; document.getElementById('screen-exam').style.display='block';">Enter Exam</button>
+<button class="start-btn" onclick="vaoLamBai()">Enter Exam</button>
 </div>
 </div>
 
@@ -100,3 +100,71 @@ const danhSachReading = [
 // --- PART 1: Monster-hunting ---
 {
 id: "r1", part: "Reading Part 1", type: "multiple-choice", title: "Monster-hunting",
+<script>
+// HÀM TỰ ĐỘNG KHỞI CHẠY KHI ẤN NÚT ENTER EXAM Ở DÒNG 78
+function vaoLamBai() {
+// 1. ÉP TRÌNH DUYỆT TỰ ĐỘNG PHÓNG TO FULL MÀN HÌNH TỰ ĐỘNG (Bỏ hẳn thanh công cụ Chrome)
+const de = document.documentElement;
+if (de.requestFullscreen) de.requestFullscreen();
+else if (de.webkitRequestFullscreen) de.webkitRequestFullscreen();
+else if (de.msRequestFullscreen) de.msRequestFullscreen();
+
+// 2. ẨN MÀN HÌNH KIỂM TRA, HIỆN MÀN HÌNH THI CHÍNH
+document.getElementById('screen-check').style.display = 'none';
+document.getElementById('screen-exam').style.display = 'block';
+
+// 3. TỰ ĐỘNG VẼ CÂU HỎI ĐẦU TIÊN VÀO VÙNG TRỐNG DÒNG 93
+hienThiCauHoi(0);
+
+// 4. KÍCH HOẠT ĐỒNG HỒ ĐẾM NGƯỢC CHẠY GIÂY
+let thoiGian = 3600;
+const oDongHo = document.getElementById('timer');
+const boDemGio = setInterval(function() {
+if(thoiGian <= 0) { clearInterval(boDemGio); alert("Time is up!"); return; }
+thoiGian--;
+let h = Math.floor(thoiGian / 3600);
+let m = Math.floor((thoiGian % 3600) / 60);
+let s = thoiGian % 60;
+if(oDongHo) oDongHo.innerText = (h<10?"0"+h:h)+":"+(m<10?"0"+m:m)+":"+(s<10?"0"+s:s);
+}, 1000);
+}
+
+// HÀM ĐỌC DỮ LIỆU ĐỀ THI ĐỂ HIỂN THỊ LÊN MÀN HÌNH
+let viTriHienTai = 0;
+function hienThiCauHoi(index) {
+if (!danhSachReading || danhSachReading.length === 0) return;
+viTriHienTai = index;
+const item = danhSachReading[index];
+
+// Đẩy văn bản và câu hỏi trắc nghiệm vào vùng <main id="main-exam-content"> trống
+const mainContent = document.getElementById('main-exam-content');
+if (mainContent) {
+mainContent.innerHTML = `
+<div style="display: flex; gap: 20px; padding: 20px; width: 100%;">
+<div style="flex: 1; background: #fff; padding: 20px; border: 1px solid #ddd; max-height: 75vh; overflow-y: auto;">
+<h3>Reading Text: Monster-hunting</h3>
+<p style="margin-top: 10px; line-height: 1.6;">Cryptids are creatures that people believe exist, but there is no official scientific proof yet. The most famous example is the Loch Ness Monster in Scotland. For decades, tourists have claimed to see a large shape swimming in the deep lake...</p>
+</div>
+<div style="flex: 1; background: #fff; padding: 20px; border: 1px solid #ddd;">
+<h4 style="color: #c31e1e;">Question ${index + 1}:</h4>
+<p style="font-weight: bold; margin: 15px 0;">${item.title || "Choose the correct answer based on the text:"}</p>
+<label style="display: block; margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
+<input type="radio" name="ans"> A. some particularly talented new players joined.
+</label>
+<label style="display: block; margin: 10px 0; padding: 10px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer;">
+<input type="radio" name="ans"> B. the coach changed the training schedule.
+</label>
+</div>
+</div>
+`;
+}
+}
+
+// KẾT NỐI HÀM CHUYỂN CÂU VỚI HAI NÚT PREVIOUS / NEXT Ở DÒNG 88 VÀ 89 CỦA BẠN
+function chuyenCauHoi(huong) {
+let viTriMoi = viTriHienTai + huong;
+if (viTriMoi >= 0 && viTriMoi < danhSachReading.length) {
+hienThiCauHoi(viTriMoi);
+}
+}
+</script>
