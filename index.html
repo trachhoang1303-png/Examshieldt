@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ExamShield Web Mocktest</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: Arial, sans-serif; }
+body { display: flex; flex-direction: column; height: 100vh; background-color: #f0f2f5; overflow: hidden; }
+
+/* 1. THANH HEADER TRÊN CÙNG */
+header { height: 70px; background: white; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; border-bottom: 3px solid #c31e1e; z-index: 10; }
+.logo { font-size: 22px; font-weight: bold; color: #c31e1e; }
+.exam-title { font-size: 15px; color: #3c3c3c; margin-left: 20px; flex-grow: 1; }
+.timer-box { background: #c31e1e; color: white; padding: 8px 15px; font-weight: bold; font-size: 18px; border-radius: 4px; margin-right: 20px; }
+.nav-btn { padding: 8px 16px; border: none; font-weight: bold; cursor: pointer; margin-left: 10px; border-radius: 4px; }
+.btn-prev { background: #d2d7dc; color: #333; }
+.btn-next { background: #c31e1e; color: white; }
+
+/* BỐ CỤC CHÍNH */
+.container { display: flex; flex: 1; height: calc(100vh - 70px); position: relative; }
+
+/* 2. THANH SIDEBAR BÊN TRÁI */
+sidebar { width: 220px; background: #f8f9fa; border-right: 1px solid #e2e8f0; padding: 20px 0; }
+.menu-item { padding: 12px 25px; font-size: 14px; color: #4a5568; cursor: pointer; font-weight: normal; }
+.menu-item.active { color: #c31e1e; font-weight: bold; background: #fee2e2; border-left: 4px solid #c31e1e; }
+
+/* 3. VÙNG KHÔNG GIAN CÂU HỎI */
+main { flex: 1; padding: 40px; overflow-y: auto; display: flex; flex-direction: column; align-items: flex-start; }
+.question-card { background: white; border: 1px solid #cbd5e1; width: 100%; max-width: 900px; padding: 30px; border-radius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+.q-text { font-size: 18px; font-weight: bold; color: #1e293b; margin-bottom: 25px; }
+
+/* ĐÁP ÁN ĐỔI KHUNG ĐỎ KHI CHỌN */
+.option-container { display: flex; flex-direction: column; gap: 15px; }
+.option-item { display: flex; align-items: center; border: 1px solid #cbd5e1; padding: 12px 20px; cursor: pointer; border-radius: 4px; transition: all 0.2s; }
+.option-item:hover { background: #f8fafc; }
+.option-item.selected { border: 2px solid #c31e1e; background: #fff5f5; }
+.opt-letter { font-weight: bold; background: #e2e8f0; color: #334155; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-right: 15px; font-size: 14px; }
+.option-item.selected .opt-letter { background: #c31e1e; color: white; }
+.opt-text { font-size: 15px; color: #334155; }
+
+.btn-exit { margin-top: 30px; background: #c31e1e; color: white; border: none; padding: 10px 24px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+
+/* 4. KHUNG GIÁM SÁT WEBCAM Ở GÓC DƯỚI */
+#webcam-box { position: absolute; bottom: 20px; right: 20px; width: 200px; height: 150px; background: black; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid white; }
+#video { width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+</style>
+</head>
+<body>
+
+<header>
+<div class="logo">PeopleCert</div>
+<div class="exam-title">LanguageCert International ESOL B2 - Web Mocktest Mode</div>
+<div class="timer-box" id="timer">00:22:33</div>
+<button class="nav-btn btn-prev" onclick="chuyenCauHoi(-1)">Previous</button>
+<button class="nav-btn btn-next" onclick="chuyenCauHoi(1)">Next</button>
+</header>
+
+<div class="container">
+<sidebar>
+<div class="menu-item active">Listening Part 1</div>
+<div class="menu-item">Listening Part 2</div>
+<div class="menu-item">Reading Part 1</div>
+<div class="menu-item">Writing Part 1</div>
+</sidebar>
+
+<main>
+<div class="question-card">
+<div class="q-text" id="question-text">Đang tải câu hỏi...</div>
+<div class="option-container" id="options-box"></div>
+</div>
+<button class="btn-exit" onclick="nopBaiThi()">Exit Exam</button>
+</main>
+
+<!-- KHUNG WEBCAM TỰ ĐỘNG -->
+<div id="webcam-box">
+<video id="video" autoplay playsinline muted></video>
+</div>
+</div>
+
+<script>
+// --- 1. DỮ LIỆU CÂU HỎI THI THỬ (BẠN TỰ THAY ĐỔI TẠI ĐÂY) ---
+const danhSachCauHoi = [
+{
+index: 1,
+text: "The woman thinks the team was successful because...",
+options: [
+{ letter: "A", text: "some particularly talented new players joined." },
+{ letter: "B", text: "the coach changed their training schedule." },
+{ letter: "C", text: "they won all their practice matches easily." }
+],
+correct: 0,
+selected: null
+},
+{
+index: 2,
+text: "Ứng dụng thi trực tuyến Web App sử dụng giao thức nào để truyền tải hình ảnh camera?",
+options: [
+{ letter: "A", text: "Giao thức FTP truyền file" },
+{ letter: "B", text: "Thư viện HTML5 WebRTC API" },
+{ letter: "C", text: "Cổng kết nối VGA truyền thống" }
+],
+correct: 1,
+selected: null
+}
+];
+
+let viTriHienTai = 0;
+let tongThoiGianGiay = 1353; // 22 phút 33 giây
+
+// --- 2. TỰ ĐỘNG BẬT CAMERA WEBCAM TRÊN TRÌNH DUYỆT ---
+async function khoiDongWebcam() {
+try {
+const luongVideo = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+document.getElementById('video').srcObject = luongVideo;
+} catch (err) {
+alert("CẢNH BÁO BẢO MẬT: Vui lòng nhấn 'Allow' cho phép duyệt quyền truy cập Webcam để làm bài thi!");
+}
+}
+
+// --- 3. ĐỒNG HỒ ĐẾM NGƯỢC ---
+function startTimer() {
+const timerInterval = setInterval(() => {
+if (tongThoiGianGiay <= 0) {
+clearInterval(timerInterval);
+alert("Đã hết thời gian thi thử! Hệ thống tự động nộp bài.");
+tinhDiem();
+} else {
+tongThoiGianGiay--;
+let hrs = Math.floor(tongThoiGianGiay / 3600);
+let mins = Math.floor((tongThoiGianGiay % 3600) / 60);
+let secs = tongThoiGianGiay % 60;
+document.getElementById('timer').innerText =
+`${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+}
+}, 1000);
+}
+
+// --- 4. ĐIỀU HƯỚNG HIỂN THỊ CÂU HỎI VÀ ĐÁP ÁN ---
+function hienThiCauHoi(idx) {
+const q = danhSachCauHoi[idx];
+document.getElementById('question-text').innerText = `${q.index}. ${q.text}`;
+
+const optionsBox = document.getElementById('options-box');
+optionsBox.innerHTML = '';
+
+q.options.forEach((opt, oIdx) => {
+const item = document.createElement('div');
+item.className = `option-item ${q.selected === oIdx ? 'selected' : ''}`;
+item.onclick = () => chonDapAn(idx, oIdx);
+
+item.innerHTML = `
+<div class="opt-letter">${opt.letter}</div>
+<div class="opt-text">${opt.text}</div>
+`;
+optionsBox.appendChild(item);
+});
+}
+
+function chonDapAn(qIdx, oIdx) {
+danhSachCauHoi[qIdx].selected = oIdx;
+hienThiCauHoi(qIdx);
+}
+
+function chuyenCauHoi(huong) {
+let target = viTriHienTai + huong;
+if (target >= 0 && target < danhSachCauHoi.length) {
+viTriHienTai = target;
+hienThiCauHoi(viTriHienTai);
+}
+}
+
+// --- 5. NỘP BÀI VÀ THOÁT THI THỬ ---
+function nopBaiThi() {
+if (confirm("Are you sure you want to end the exam and submit your answers?")) {
+tinhDiem();
+}
+}
+
+function tinhDiem() {
+let diem = 0;
+danhSachCauHoi.forEach(q => {
+if (q.selected === q.correct) diem++;
+});
+alert(`KẾT THÚC BÀI THI!\nSố câu trả lời đúng của bạn: ${diem} / ${danhSachCauHoi.length}`);
+window.close();
+// Nếu trình duyệt không cho đóng, tải lại trang để reset
+window.location.reload();
+}
+
+// Khởi động chạy hệ thống khi mở trang web
+window.onload = () => {
+khoiDongWebcam();
+startTimer();
+hienThiCauHoi(viTriHienTai);
+};
+</script>
+</body>
+</html>
